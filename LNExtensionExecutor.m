@@ -13,38 +13,13 @@
 NSString* const LNExtensionExecutorErrorDomain = @"LNExtensionExecutorErrorDomain";
 NSInteger const LNExtensionNotFoundErrorCode = 6001;
 
-@interface _LNExecutorRootViewController : UIViewController
-
-@end
-
-@implementation _LNExecutorRootViewController
-
-- (BOOL)prefersStatusBarHidden
-{
-	return [UIApplication sharedApplication].statusBarHidden;
-}
-
-- (UIStatusBarAnimation)preferredStatusBarUpdateAnimation
-{
-	return UIStatusBarAnimationFade;
-}
-
-- (UIStatusBarStyle)preferredStatusBarStyle
-{
-	return [[UIApplication sharedApplication] statusBarStyle];
-}
-
-@end
-
-@interface _LNExecutorActivityViewController : UIActivityViewController
-
-@end
+@interface _LNExecutorActivityViewController : UIActivityViewController @end
 
 @implementation _LNExecutorActivityViewController
 
 - (void)presentViewController:(UIViewController *)viewControllerToPresent animated:(BOOL)flag completion:(void (^)(void))completion
 {
-	viewControllerToPresent.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+//	viewControllerToPresent.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
 	[super presentViewController:viewControllerToPresent animated:flag completion:completion];
 }
 
@@ -53,7 +28,6 @@ NSInteger const LNExtensionNotFoundErrorCode = 6001;
 @implementation LNExtensionExecutor
 {
 	NSString* _identifier;
-	UIWindow* _extensionPresentationWindow;
 	
 	id _extension;
 }
@@ -63,7 +37,7 @@ NSInteger const LNExtensionNotFoundErrorCode = 6001;
 	return [[self alloc] _initWithExtensionBundleIdentifier:bundleId];
 }
 
-- (nullable instancetype)init
+- (instancetype)init
 {
 	[NSException raise:NSInternalInconsistencyException format:@"LNExtensionExecutor must not be initiazlied directly. Use +[LNExtensionExecutor extensionExecutorWithExtensionName:window:] to initilize."];
 	
@@ -112,20 +86,9 @@ NSInteger const LNExtensionNotFoundErrorCode = 6001;
 	return [NSString stringWithFormat:@"%@ Extension Bundle Identifier: %@", [super description], _identifier];
 }
 
-- (void)executeWithInputItems:(nonnull NSArray *)inputItems completionHandler:(void (^ __nonnull)(BOOL completed, NSArray * __nullable returnedItems, NSError* __nullable activityError))handler
+- (void)executeWithInputItems:(NSArray *)inputItems onViewController:(UIViewController*)vc completionHandler:(void (^ __nonnull)(BOOL completed, NSArray * __nullable returnedItems, NSError* __nullable activityError))handler
 {
-	NSMutableArray* items = [NSMutableArray new];
-	
-	[inputItems enumerateObjectsUsingBlock:^(id item, NSUInteger idx, BOOL *stop) {
-		NSItemProvider* itemProvider = [[NSItemProvider alloc] initWithItem:item typeIdentifier:(NSString *)kUTTypeItem];
-		
-		NSExtensionItem* extensionItem = [NSExtensionItem new];
-		extensionItem.attachments = @[itemProvider];
-		
-		[items addObject:extensionItem];
-	}];
-	
-	[self _executeWithInputItems:items retriesCount:3 completionHandler:^ (BOOL completed, NSArray * __nullable returnedExtensionItems, NSError * __nullable activityError) {
+	[self _executeWithInputItems:inputItems viewController:vc completionHandler:^ (BOOL completed, NSArray * __nullable returnedExtensionItems, NSError * __nullable activityError) {
 
 		__block NSUInteger loadCounter = 0;
 		NSMutableArray* returnedItems = [NSMutableArray new];
@@ -150,7 +113,7 @@ NSInteger const LNExtensionNotFoundErrorCode = 6001;
 				 
 				 [itemProvider loadItemForTypeIdentifier:itemProvider.registeredTypeIdentifiers.firstObject options:nil completionHandler:^(id<NSSecureCoding> item, NSError *error)
 				 {
-					 void (^providerLoadHandler)() = ^
+					 void (^providerLoadHandler)(void) = ^
 					 {
 						 if(item != nil)
 						 {
@@ -184,7 +147,7 @@ NSInteger const LNExtensionNotFoundErrorCode = 6001;
 	
 }
 
-- (void)_executeWithInputItems:(nonnull NSArray *)inputItems retriesCount:(NSUInteger)retriesCount completionHandler:(void (^ __nullable)(BOOL completed, NSArray* __nullable returnedItems, NSError* __nullable activityError))handler
+- (void)_executeWithInputItems:(nonnull NSArray *)inputItems viewController:(UIViewController*)vc completionHandler:(void (^ __nullable)(BOOL completed, NSArray* __nullable returnedItems, NSError* __nullable activityError))handler
 {
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_appEnteredBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
 
@@ -201,30 +164,34 @@ NSInteger const LNExtensionNotFoundErrorCode = 6001;
 		return;
 	}
 	
-	NSMutableString* extClsName = [NSStringFromClass([LNExtensionExecutor class]) mutableCopy];
-	[extClsName deleteCharactersInRange:NSMakeRange(11, 8)];
-	[extClsName replaceCharactersInRange:NSMakeRange(0, 2) withString:@"NS"];
+	NSString* extension = [NSStringFromClass(LNExtensionExecutor.class) substringWithRange:NSMakeRange(2, 9)];
+	NSString* UIActivity = [NSStringFromClass(UIActivityViewController.class) substringToIndex:10];
+	NSString* activityStr = [UIActivity substringFromIndex:2];
 	
-	NSMutableString* extActClsName = [NSStringFromClass([UIApplication class]) mutableCopy];
-	[extActClsName appendString:[extClsName substringFromIndex:2]];
-	[extActClsName appendString:[NSStringFromClass([UIActivityViewController class]) substringWithRange:NSMakeRange(2, 8)]];
+	NSMutableString* extActClsName = [@"_" mutableCopy];
+	[extActClsName appendString:UIActivity];
+	[extActClsName appendString:[NSStringFromClass(UIApplication.class) substringFromIndex:2]];
+	[extActClsName appendString:extension];
+	[extActClsName appendString:@"Discovery"];
 	
-	NSString* slName = [NSMutableString stringWithFormat:@"initWith%@:", [extActClsName substringWithRange:NSMakeRange(2, 20)]];
+	NSMutableString* sel = [[extension lowercaseString] mutableCopy];
+	[sel appendString:@"Based"];
+	[sel appendString:activityStr];
+	[sel appendString:@"For"];
+	[sel appendString:[NSString stringWithFormat:@"%@:", extension]];
 	
-	id x = msgsend2([NSClassFromString(extActClsName) alloc], NSSelectorFromString(slName), _extension);
+	id activity = msgsend2(NSClassFromString(extActClsName), NSSelectorFromString(sel), _extension);
 	
-	_extensionPresentationWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-	_extensionPresentationWindow.windowLevel = UIWindowLevelStatusBar - 1;
-	_extensionPresentationWindow.rootViewController = [_LNExecutorRootViewController new];
-	_extensionPresentationWindow.rootViewController.view.backgroundColor = [[UIColor greenColor] colorWithAlphaComponent:0.0];
-	[_extensionPresentationWindow makeKeyAndVisible];
+	_LNExecutorActivityViewController* activityVC = [[_LNExecutorActivityViewController alloc] initWithActivityItems:inputItems applicationActivities:@[activity]];
 	
-	_LNExecutorActivityViewController* vc = [[_LNExecutorActivityViewController alloc] initWithActivityItems:inputItems applicationActivities:@[x]];
+	__block UIView* wrapperView;
+	__weak __typeof(activityVC) weakActivityVC = activityVC;
 	
-	vc.completionWithItemsHandler = ^ (NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError)
+	activityVC.completionWithItemsHandler = ^ (NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError)
 	{
-		_extensionPresentationWindow.hidden = YES;
-		_extensionPresentationWindow = nil;
+		[weakActivityVC willMoveToParentViewController:nil];
+		[wrapperView removeFromSuperview];
+		[weakActivityVC removeFromParentViewController];
 		
 		if(handler)
 		{
@@ -234,21 +201,21 @@ NSInteger const LNExtensionNotFoundErrorCode = 6001;
 	
 	NSMutableString* alsEmbd = [NSStringFromSelector(@selector(allowsEditing)) mutableCopy];
 	[alsEmbd replaceCharactersInRange:NSMakeRange(6, 7) withString:@"Embedding"];
-	
-	[vc setValue:@YES forKey:alsEmbd];
 
-	[_extensionPresentationWindow.rootViewController addChildViewController:vc];
+	[activityVC setValue:@YES forKey:alsEmbd];
+
+	[vc addChildViewController:activityVC];
 	
-	UIView* wrapperView = [[UIView alloc] initWithFrame:_extensionPresentationWindow.rootViewController.view.bounds];
+	wrapperView = [[UIView alloc] initWithFrame:vc.view.bounds];
 	[wrapperView setAlpha:0.0];
-	[wrapperView addSubview:vc.view];
-	
-	[_extensionPresentationWindow.rootViewController.view addSubview:wrapperView];
-	[vc didMoveToParentViewController:_extensionPresentationWindow.rootViewController];
+	[wrapperView addSubview:activityVC.view];
+
+	[vc.view addSubview:wrapperView];
+	[activityVC didMoveToParentViewController:vc];
 	
 	NSMutableString* prfmAct = [NSMutableString stringWithFormat:@"_%@%@:", @"perform", [NSStringFromClass([UIActivityViewController class]) substringWithRange:NSMakeRange(2, 8)]];
-	
-	msgsend3(vc, NSSelectorFromString(prfmAct), x);
+
+	msgsend3(activityVC, NSSelectorFromString(prfmAct), activity);
 }
 
 @end
