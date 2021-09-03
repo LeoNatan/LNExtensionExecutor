@@ -1,0 +1,2 @@
+- Added support for Swift Package Manager
+- Modernized API
