@@ -27,7 +27,7 @@ echo -e "\033[1;34mCreating release notes\033[0m"
 
 RELEASE_NOTES_FILE=_tmp_release_notes.md
 
-git ignore "$(RELEASE_NOTES_FILE)"
+git ignore "${RELEASE_NOTES_FILE}"
 
 touch "${RELEASE_NOTES_FILE}"
 open -Wn "${RELEASE_NOTES_FILE}"
