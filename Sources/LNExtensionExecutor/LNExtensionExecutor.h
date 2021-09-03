@@ -6,7 +6,7 @@
 
 @import UIKit;
 
-extern NSString* __nonnull const LNActivityExecutorErrorDomain;
+extern NSErrorDomain __nonnull const LNActivityExecutorErrorDomain;
 extern NSInteger const LNExtensionNotFoundErrorCode;
 
 NS_ASSUME_NONNULL_BEGIN
@@ -15,7 +15,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)init NS_UNAVAILABLE;
 + (instancetype)new NS_UNAVAILABLE;
-+ (nullable instancetype)executorWithExtensionBundleIdentifier:(NSString*)bundleIdentifier;
+- (nullable instancetype)initWithExtensionBundleIdentifier:(nonnull NSString*)bundleId error:(NSError**)error NS_DESIGNATED_INITIALIZER;
+
++ (nullable instancetype)executorWithExtensionBundleIdentifier:(NSString*)bundleIdentifier NS_REFINED_FOR_SWIFT;
++ (nullable instancetype)executorWithExtensionBundleIdentifier:(NSString*)bundleIdentifier error:(NSError* __autoreleasing *)error NS_REFINED_FOR_SWIFT;
 
 - (void)executeWithInputItems:(NSArray *)inputItems onViewController:(UIViewController*)vc completionHandler:(void (^ __nonnull)(BOOL completed, NSArray * __nullable returnedItems, NSError* __nullable activityError))handler;
 

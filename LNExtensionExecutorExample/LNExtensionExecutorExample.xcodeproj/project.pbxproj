@@ -3,21 +3,37 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		39114EEE26E2CC55004FC75B /* LNExtensionExecutor in Frameworks */ = {isa = PBXBuildFile; productRef = 39114EED26E2CC55004FC75B /* LNExtensionExecutor */; };
+		39114EEF26E2CC55004FC75B /* LNExtensionExecutor in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 39114EED26E2CC55004FC75B /* LNExtensionExecutor */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		394BA3E925E93CAA00899EB5 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 394BA3E825E93CAA00899EB5 /* AppDelegate.m */; };
 		394BA3EC25E93CAA00899EB5 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 394BA3EB25E93CAA00899EB5 /* SceneDelegate.m */; };
 		394BA3F225E93CAA00899EB5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 394BA3F025E93CAA00899EB5 /* Main.storyboard */; };
 		394BA3F425E93CAC00899EB5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 394BA3F325E93CAC00899EB5 /* Assets.xcassets */; };
 		394BA3F725E93CAC00899EB5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 394BA3F525E93CAC00899EB5 /* LaunchScreen.storyboard */; };
 		394BA3FA25E93CAC00899EB5 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 394BA3F925E93CAC00899EB5 /* main.m */; };
-		394BA40225E9621000899EB5 /* LNExtensionExecutor.m in Sources */ = {isa = PBXBuildFile; fileRef = 394BA40125E9621000899EB5 /* LNExtensionExecutor.m */; };
 		394BA40525E980D000899EB5 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 394BA40425E980D000899EB5 /* ViewController.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		39114EF026E2CC55004FC75B /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				39114EEF26E2CC55004FC75B /* LNExtensionExecutor in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		39114EE926E2CC48004FC75B /* LNExtensionExecutor */ = {isa = PBXFileReference; lastKnownFileType = folder; name = LNExtensionExecutor; path = ..; sourceTree = "<group>"; };
 		394BA3E425E93CAA00899EB5 /* LNExtensionExecutorExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LNExtensionExecutorExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		394BA3E725E93CAA00899EB5 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		394BA3E825E93CAA00899EB5 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -28,9 +44,6 @@
 		394BA3F625E93CAC00899EB5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		394BA3F825E93CAC00899EB5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		394BA3F925E93CAC00899EB5 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		394BA40025E9621000899EB5 /* LNExtensionExecutor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LNExtensionExecutor.h; path = ../LNExtensionExecutor.h; sourceTree = "<group>"; };
-		394BA40125E9621000899EB5 /* LNExtensionExecutor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LNExtensionExecutor.m; path = ../LNExtensionExecutor.m; sourceTree = "<group>"; };
-		394BA40325E980D000899EB5 /* LNExtensionExecutorExample-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "LNExtensionExecutorExample-Bridging-Header.h"; sourceTree = "<group>"; };
 		394BA40425E980D000899EB5 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -39,19 +52,27 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				39114EEE26E2CC55004FC75B /* LNExtensionExecutor in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		39114EEC26E2CC55004FC75B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		394BA3DB25E93CAA00899EB5 = {
 			isa = PBXGroup;
 			children = (
-				394BA40025E9621000899EB5 /* LNExtensionExecutor.h */,
-				394BA40125E9621000899EB5 /* LNExtensionExecutor.m */,
+				39114EE926E2CC48004FC75B /* LNExtensionExecutor */,
 				394BA3E625E93CAA00899EB5 /* LNExtensionExecutorExample */,
 				394BA3E525E93CAA00899EB5 /* Products */,
+				39114EEC26E2CC55004FC75B /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -76,7 +97,6 @@
 				394BA3F525E93CAC00899EB5 /* LaunchScreen.storyboard */,
 				394BA3F825E93CAC00899EB5 /* Info.plist */,
 				394BA3F925E93CAC00899EB5 /* main.m */,
-				394BA40325E980D000899EB5 /* LNExtensionExecutorExample-Bridging-Header.h */,
 			);
 			path = LNExtensionExecutorExample;
 			sourceTree = "<group>";
@@ -91,12 +111,17 @@
 				394BA3E025E93CAA00899EB5 /* Sources */,
 				394BA3E125E93CAA00899EB5 /* Frameworks */,
 				394BA3E225E93CAA00899EB5 /* Resources */,
+				39114EF026E2CC55004FC75B /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				39114EEB26E2CC4E004FC75B /* PBXTargetDependency */,
 			);
 			name = LNExtensionExecutorExample;
+			packageProductDependencies = (
+				39114EED26E2CC55004FC75B /* LNExtensionExecutor */,
+			);
 			productName = LNExtensionExecutorExample;
 			productReference = 394BA3E425E93CAA00899EB5 /* LNExtensionExecutorExample.app */;
 			productType = "com.apple.product-type.application";
@@ -107,7 +132,7 @@
 		394BA3DC25E93CAA00899EB5 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1250;
+				LastUpgradeCheck = 1300;
 				TargetAttributes = {
 					394BA3E325E93CAA00899EB5 = {
 						CreatedOnToolsVersion = 12.5;
@@ -155,11 +180,17 @@
 				394BA3E925E93CAA00899EB5 /* AppDelegate.m in Sources */,
 				394BA3FA25E93CAC00899EB5 /* main.m in Sources */,
 				394BA3EC25E93CAA00899EB5 /* SceneDelegate.m in Sources */,
-				394BA40225E9621000899EB5 /* LNExtensionExecutor.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		39114EEB26E2CC4E004FC75B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 39114EEA26E2CC4E004FC75B /* LNExtensionExecutor */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		394BA3F025E93CAA00899EB5 /* Main.storyboard */ = {
@@ -289,6 +320,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -308,7 +340,6 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.LeoNatan.LNExtensionExecutorExample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "LNExtensionExecutorExample/LNExtensionExecutorExample-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -330,7 +361,6 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.LeoNatan.LNExtensionExecutorExample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "LNExtensionExecutorExample/LNExtensionExecutorExample-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -358,6 +388,17 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		39114EEA26E2CC4E004FC75B /* LNExtensionExecutor */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = LNExtensionExecutor;
+		};
+		39114EED26E2CC55004FC75B /* LNExtensionExecutor */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = LNExtensionExecutor;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 394BA3DC25E93CAA00899EB5 /* Project object */;
 }

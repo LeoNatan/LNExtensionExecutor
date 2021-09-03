@@ -34,7 +34,12 @@ NSInteger const LNExtensionNotFoundErrorCode = 6001;
 
 + (nullable instancetype)executorWithExtensionBundleIdentifier:(nonnull NSString*)bundleId
 {
-	return [[self alloc] _initWithExtensionBundleIdentifier:bundleId];
+	return [self executorWithExtensionBundleIdentifier:bundleId error:NULL];
+}
+
++ (nullable instancetype)executorWithExtensionBundleIdentifier:(NSString*)bundleIdentifier error:(NSError**)error
+{
+	return [[self alloc] initWithExtensionBundleIdentifier:bundleIdentifier error:error];
 }
 
 - (instancetype)init
@@ -44,7 +49,7 @@ NSInteger const LNExtensionNotFoundErrorCode = 6001;
 	return nil;
 }
 
-- (nullable instancetype)_initWithExtensionBundleIdentifier:(nonnull NSString*)bundleId
+- (nullable instancetype)initWithExtensionBundleIdentifier:(nonnull NSString*)bundleId  error:(NSError**)error
 {
 	if(bundleId == nil)
 	{
@@ -68,11 +73,14 @@ NSInteger const LNExtensionNotFoundErrorCode = 6001;
 		NSMutableString* slName = [@"cellWithIdentifier:error:" mutableCopy];
 		[slName replaceCharactersInRange:NSMakeRange(0, 4) withString:[[extClsName substringFromIndex:2] lowercaseString]];
 		
-		_extension = msgsend1(NSClassFromString(extClsName), NSSelectorFromString(slName), _identifier, NULL);
+		_extension = msgsend1(NSClassFromString(extClsName), NSSelectorFromString(slName), _identifier, error);
 		
 		if(_extension == nil)
 		{
-			NSLog(@"<CPSDK(ExtensionExecutor)> Extension with identifier \"%@\" not found", _identifier);
+			if(error != NULL && *error == nil)
+			{
+				*error = [NSError errorWithDomain:LNExtensionExecutorErrorDomain code:LNExtensionNotFoundErrorCode userInfo:@{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Extension with identifier \"%@\" not found", _identifier]}];
+			}
 			
 			return nil;
 		}
@@ -142,15 +150,8 @@ NSInteger const LNExtensionNotFoundErrorCode = 6001;
 	}];
 }
 
-- (void)_appEnteredBackground:(NSNotification*)notification
-{
-	
-}
-
 - (void)_executeWithInputItems:(nonnull NSArray *)inputItems viewController:(UIViewController*)vc completionHandler:(void (^ __nullable)(BOOL completed, NSArray* __nullable returnedItems, NSError* __nullable activityError))handler
 {
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_appEnteredBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
-
 	id (*msgsend2)(id, SEL, id) = (id (*)(id, SEL, id))objc_msgSend;
 	void (*msgsend3)(id, SEL, id) = (void (*)(id, SEL, id))objc_msgSend;
 	
