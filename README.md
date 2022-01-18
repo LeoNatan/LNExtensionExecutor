@@ -10,7 +10,7 @@ An extension executor for iOS, allowing bypass of `UIActivityViewController` to 
 
 Swift Package Manager is the recommended way to integrate `LNExtensionExecutor` in your project.
 
-LNTouchVisualizer supports SPM versions 5.1.0 and above. To use SPM, you should use Xcode 11 to open your project. Click `File` -> `Swift Packages` -> `Add Package Dependency`, enter `https://github.com/LeoNatan/LNExtensionExecutor`. Select the version you’d like to use.
+`LNExtensionExecutor` supports SPM versions 5.1.0 and above. To use SPM, you should use Xcode 11 to open your project. Click `File` -> `Swift Packages` -> `Add Package Dependency`, enter `https://github.com/LeoNatan/LNExtensionExecutor`. Select the version you’d like to use.
 
 You can also manually add the package to your Package.swift file:
 
