@@ -13,18 +13,20 @@ class ViewController: UIViewController {
 		return [UIImage(systemName: "scribble.variable")!]
 	}
 	
-	fileprivate func execute(extensionBundleIdentifier: String) {
+	@MainActor
+	fileprivate func execute(extensionBundleIdentifier: String) async {
 		do {
 			let executor = try LNExtensionExecutor(extensionBundleIdentifier: extensionBundleIdentifier)
-			executor.execute(withInputItems: payload, on: self, completionHandler: { completed, returnedItems, activityError in
-				guard let activityError = activityError else {
-					return
-				}
-				
-				print("Got error: \(activityError)")
-			})
+			let (completed, returnItems) = try await executor.execute(withInputItems: payload, on: self)
+			print("completed: \(completed) return items: \(returnItems)")
 		} catch(let error) {
-			print(error.localizedDescription)
+			print("error: \(error.localizedDescription)")
+		}
+	}
+	
+	fileprivate func execute(extensionBundleIdentifier: String) {
+		Task {
+			await execute(extensionBundleIdentifier: extensionBundleIdentifier)
 		}
 	}
 	

@@ -1,5 +1,6 @@
 //
 //  LNExtensionExecutor.m
+//  LNExtensionExecutor
 //
 //  Created by Leo Natan on 2015-03-02.
 //
@@ -12,6 +13,8 @@
 
 NSString* const LNExtensionExecutorErrorDomain = @"LNExtensionExecutorErrorDomain";
 NSInteger const LNExtensionNotFoundErrorCode = 6001;
+
+#define LN_ENSURE_MAIN_THREAD() do { if(NSThread.isMainThread == NO) { [NSException raise:NSInternalInconsistencyException format:@"LNExtensionExecutor API should be called on the main thread only."]; } } while(0);
 
 @interface _LNExecutorActivityViewController : UIActivityViewController @end
 
@@ -152,6 +155,8 @@ NSInteger const LNExtensionNotFoundErrorCode = 6001;
 
 - (void)_executeWithInputItems:(nonnull NSArray *)inputItems viewController:(UIViewController*)vc completionHandler:(void (^ __nullable)(BOOL completed, NSArray* __nullable returnedItems, NSError* __nullable activityError))handler
 {
+	LN_ENSURE_MAIN_THREAD();
+	
 	id (*msgsend2)(id, SEL, id) = (id (*)(id, SEL, id))objc_msgSend;
 	void (*msgsend3)(id, SEL, id) = (void (*)(id, SEL, id))objc_msgSend;
 	

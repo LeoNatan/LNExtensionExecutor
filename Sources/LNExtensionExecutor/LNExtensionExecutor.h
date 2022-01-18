@@ -1,5 +1,6 @@
 //
 //  LNExtensionExecutor.h
+//  LNExtensionExecutor
 //
 //  Created by Leo Natan on 2015-03-02.
 //
@@ -11,11 +12,12 @@ extern NSInteger const LNExtensionNotFoundErrorCode;
 
 NS_ASSUME_NONNULL_BEGIN
 
+NS_SWIFT_UI_ACTOR
 @interface LNExtensionExecutor : NSObject
 
 - (instancetype)init NS_UNAVAILABLE;
 + (instancetype)new NS_UNAVAILABLE;
-- (nullable instancetype)initWithExtensionBundleIdentifier:(nonnull NSString*)bundleId error:(NSError**)error NS_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithExtensionBundleIdentifier:(NSString*)bundleId error:(NSError**)error NS_DESIGNATED_INITIALIZER;
 
 + (nullable instancetype)executorWithExtensionBundleIdentifier:(NSString*)bundleIdentifier NS_REFINED_FOR_SWIFT;
 + (nullable instancetype)executorWithExtensionBundleIdentifier:(NSString*)bundleIdentifier error:(NSError* __autoreleasing *)error NS_REFINED_FOR_SWIFT;

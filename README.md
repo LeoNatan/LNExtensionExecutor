@@ -34,15 +34,10 @@ import LNExtensionExecutor
 //...
 
 do {
-	let executor = try LNExtensionExecutor(extensionBundleIdentifier: "net.whatsapp.WhatsApp.ShareExtension")
-	executor.execute(withInputItems: payload, on: self, completionHandler: { completed, returnedItems, activityError in
-		guard let activityError = activityError else {
-			return
-		}
-		
-		print("Got error: \(activityError.localizedDescription)")
-	})
+	let executor = try LNExtensionExecutor(extensionBundleIdentifier: extensionBundleIdentifier)
+	let (completed, returnItems) = try await executor.execute(withInputItems: payload, on: self)
+	print("completed: \(completed) return items: \(returnItems)")
 } catch(let error) {
-	print(error.localizedDescription)
+	print("error: \(error.localizedDescription)")
 }
 ```
