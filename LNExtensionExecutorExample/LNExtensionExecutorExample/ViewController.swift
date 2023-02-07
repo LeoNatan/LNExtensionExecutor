@@ -17,7 +17,7 @@ class ViewController: UIViewController {
 	fileprivate func execute(extensionBundleIdentifier: String) async {
 		do {
 			let executor = try LNExtensionExecutor(extensionBundleIdentifier: extensionBundleIdentifier)
-			let (completed, returnItems) = try await executor.execute(withInputItems: payload, on: self)
+			let (completed, returnItems) = try await executor.execute(withActivityItems: payload, on: self)
 			print("completed: \(completed) return items: \(returnItems)")
 		} catch(let error) {
 			print("error: \(error.localizedDescription)")
@@ -44,6 +44,13 @@ class ViewController: UIViewController {
 	
 	@IBAction func showActivityViewController(_ sender: AnyObject) {
 		let avc = UIActivityViewController(activityItems: payload, applicationActivities: nil)
+		avc.completionWithItemsHandler = { activityType, completed, returnedItems, activityError in
+			guard let activityType else {
+				return
+			}
+			
+			print("🔵 Activity type: \(activityType.rawValue) completed: \(completed)")
+		}
 		present(avc, animated: true)
 	}
 }

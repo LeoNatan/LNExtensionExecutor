@@ -97,16 +97,16 @@ NSInteger const LNExtensionNotFoundErrorCode = 6001;
 	return [NSString stringWithFormat:@"%@ Extension Bundle Identifier: %@", [super description], _identifier];
 }
 
-- (void)executeWithInputItems:(NSArray *)inputItems onViewController:(UIViewController*)vc completionHandler:(void (^ __nonnull)(BOOL completed, NSArray * __nullable returnedItems, NSError* __nullable activityError))handler
+- (id)_completionHandlerWithUserCompletionHandler:(void (^ __nonnull)(BOOL completed, NSArray* __nullable returnedItems, NSError* __nullable activityError))handler
 {
-	[self _executeWithInputItems:inputItems viewController:vc completionHandler:^ (BOOL completed, NSArray * __nullable returnedExtensionItems, NSError * __nullable activityError) {
-
+	return ^ (BOOL completed, NSArray * __nullable returnedExtensionItems, NSError * __nullable activityError) {
+		
 		__block NSUInteger loadCounter = 0;
 		NSMutableArray* returnedItems = [NSMutableArray new];
 		
 		if(activityError)
 		{
-			NSLog(@"<CPSDK(ExtensionExecutor)> Received error while attempting execution: %@", activityError);
+			NSLog(@"[LNExtensionExecutor] Received error while attempting execution: %@", activityError);
 		}
 		
 		if(completed == NO || returnedExtensionItems.count == 0)
@@ -118,42 +118,57 @@ NSInteger const LNExtensionNotFoundErrorCode = 6001;
 		
 		[returnedExtensionItems enumerateObjectsUsingBlock:^(NSExtensionItem* extensionItem, NSUInteger idx, BOOL *stop)
 		 {
-			 [extensionItem.attachments enumerateObjectsUsingBlock:^(NSItemProvider* itemProvider, NSUInteger idx, BOOL *stop) {
-				 
-				 loadCounter++;
-				 
-				 [itemProvider loadItemForTypeIdentifier:itemProvider.registeredTypeIdentifiers.firstObject options:nil completionHandler:^(id<NSSecureCoding> item, NSError *error)
+			[extensionItem.attachments enumerateObjectsUsingBlock:^(NSItemProvider* itemProvider, NSUInteger idx, BOOL *stop) {
+				
+				loadCounter++;
+				
+				[itemProvider loadItemForTypeIdentifier:itemProvider.registeredTypeIdentifiers.firstObject options:nil completionHandler:^(id<NSSecureCoding> item, NSError *error)
 				 {
-					 void (^providerLoadHandler)(void) = ^
-					 {
-						 if(item != nil)
-						 {
-							 [returnedItems addObject:item];
-						 }
-						 
-						 loadCounter --;
-						 
-						 if(loadCounter == 0)
-						 {
-							 handler(completed, returnedItems, activityError);
-						 }
-					 };
-					 
-					 if([NSThread isMainThread])
-					 {
-						 providerLoadHandler();
-					 }
-					 else
-					 {
-						 dispatch_async(dispatch_get_main_queue(), providerLoadHandler);
-					 }
-				 }];
-			 }];
-		 }];
-	}];
+					void (^providerLoadHandler)(void) = ^
+					{
+						if(item != nil)
+						{
+							[returnedItems addObject:item];
+						}
+						
+						loadCounter --;
+						
+						if(loadCounter == 0)
+						{
+							handler(completed, returnedItems, activityError);
+						}
+					};
+					
+					if([NSThread isMainThread])
+					{
+						providerLoadHandler();
+					}
+					else
+					{
+						dispatch_async(dispatch_get_main_queue(), providerLoadHandler);
+					}
+				}];
+			}];
+		}];
+	};
 }
 
-- (void)_executeWithInputItems:(nonnull NSArray *)inputItems viewController:(UIViewController*)vc completionHandler:(void (^ __nullable)(BOOL completed, NSArray* __nullable returnedItems, NSError* __nullable activityError))handler
+- (void)executeWithItemsConfiguration:(id<UIActivityItemsConfigurationReading>)activityItemsConfiguration onViewController:(UIViewController*)vc completionHandler:(void (^ __nonnull)(BOOL completed, NSArray* __nullable returnedItems, NSError* __nullable activityError))handler
+{
+	[self _executeWithConfiguration:activityItemsConfiguration activityItems:nil viewController:vc completionHandler:[self _completionHandlerWithUserCompletionHandler:handler]];
+}
+
+- (void)executeWithActivityItems:(NSArray*)activityItems onViewController:(UIViewController*)vc completionHandler:(void (^ __nonnull)(BOOL completed, NSArray* __nullable returnedItems, NSError* __nullable activityError))handler
+{
+	[self _executeWithConfiguration:nil activityItems:activityItems viewController:vc completionHandler:[self _completionHandlerWithUserCompletionHandler:handler]];
+}
+
+- (void)executeWithInputItems:(NSArray *)inputItems onViewController:(UIViewController*)vc completionHandler:(void (^ __nonnull)(BOOL completed, NSArray * __nullable returnedItems, NSError* __nullable activityError))handler
+{
+	[self executeWithActivityItems:inputItems onViewController:vc completionHandler:handler];
+}
+
+- (void)_executeWithConfiguration:(nullable id)configuration activityItems:(nullable NSArray *)activityItems viewController:(UIViewController*)vc completionHandler:(void (^ __nullable)(BOOL completed, NSArray* __nullable returnedItems, NSError* __nullable activityError))handler
 {
 	LN_ENSURE_MAIN_THREAD();
 	
@@ -188,7 +203,15 @@ NSInteger const LNExtensionNotFoundErrorCode = 6001;
 	
 	id activity = msgsend2(NSClassFromString(extActClsName), NSSelectorFromString(sel), _extension);
 	
-	_LNExecutorActivityViewController* activityVC = [[_LNExecutorActivityViewController alloc] initWithActivityItems:inputItems applicationActivities:@[activity]];
+	_LNExecutorActivityViewController* activityVC;
+	if(configuration)
+	{
+		activityVC = [[_LNExecutorActivityViewController alloc] initWithActivityItemsConfiguration:configuration];
+	}
+	else
+	{
+		activityVC = [[_LNExecutorActivityViewController alloc] initWithActivityItems:activityItems applicationActivities:@[activity]];
+	}
 	
 	__block UIView* wrapperView;
 	__weak __typeof(activityVC) weakActivityVC = activityVC;
