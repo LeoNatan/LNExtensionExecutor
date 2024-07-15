@@ -30,6 +30,14 @@ class ViewController: UIViewController {
 		}
 	}
 	
+	@IBAction func showMail(_ sender: AnyObject) {
+		execute(extensionBundleIdentifier: UIActivity.ActivityType.mail.rawValue)
+	}
+	
+	@IBAction func showMessage(_ sender: AnyObject) {
+		execute(extensionBundleIdentifier: UIActivity.ActivityType.message.rawValue)
+	}
+	
 	@IBAction func showWhatsApp(_ sender: AnyObject) {
 		execute(extensionBundleIdentifier: "net.whatsapp.WhatsApp.ShareExtension")
 	}

@@ -6,15 +6,20 @@
 //
 
 #import "LNExtensionExecutor.h"
+#import <dlfcn.h>
 
 @import UIKit;
-@import MobileCoreServices;
+@import Social;
 @import ObjectiveC;
+@import MobileCoreServices;
 
 NSString* const LNExtensionExecutorErrorDomain = @"LNExtensionExecutorErrorDomain";
 NSInteger const LNExtensionNotFoundErrorCode = 6001;
 
 #define LN_ENSURE_MAIN_THREAD() do { if(NSThread.isMainThread == NO) { [NSException raise:NSInternalInconsistencyException format:@"LNExtensionExecutor API should be called on the main thread only."]; } } while(0);
+
+//_UIActivityGetBuiltinActivities
+static NSString* const __builtins = @"X1VJQWN0aXZpdHlHZXRCdWlsdGluQWN0aXZpdGllcw==";
 
 @interface _LNExecutorActivityViewController : UIActivityViewController @end
 
@@ -33,6 +38,7 @@ NSInteger const LNExtensionNotFoundErrorCode = 6001;
 	NSString* _identifier;
 	
 	id _extension;
+	UIActivity* _builtinActivity;
 }
 
 + (nullable instancetype)executorWithExtensionBundleIdentifier:(nonnull NSString*)bundleId
@@ -76,9 +82,29 @@ NSInteger const LNExtensionNotFoundErrorCode = 6001;
 		NSMutableString* slName = [@"cellWithIdentifier:error:" mutableCopy];
 		[slName replaceCharactersInRange:NSMakeRange(0, 4) withString:[[extClsName substringFromIndex:2] lowercaseString]];
 		
+		//+[NSExtension extensionWithIdentifier:error:]
 		_extension = msgsend1(NSClassFromString(extClsName), NSSelectorFromString(slName), _identifier, error);
 		
 		if(_extension == nil)
+		{
+			//Try to load built in activity
+			
+			NSString* builtinsName = [[NSString alloc] initWithData:[[NSData alloc] initWithBase64EncodedString:__builtins options:0] encoding:NSUTF8StringEncoding];
+			NSArray<UIActivity*>* (*getBuiltins)(void) = (void*)dlsym(RTLD_SELF, builtinsName.UTF8String);
+			if(getBuiltins != NULL)
+			{
+				NSArray<UIActivity*>* builtins = getBuiltins();
+				[builtins enumerateObjectsUsingBlock:^(UIActivity * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+					if([obj.activityType isEqualToString:bundleId])
+					{
+						_builtinActivity = obj;
+						*stop = YES;
+					}
+				}];
+			}
+		}
+		
+		if(_extension == nil && _builtinActivity == nil)
 		{
 			if(error != NULL && *error == nil)
 			{
@@ -175,7 +201,7 @@ NSInteger const LNExtensionNotFoundErrorCode = 6001;
 	id (*msgsend2)(id, SEL, id) = (id (*)(id, SEL, id))objc_msgSend;
 	void (*msgsend3)(id, SEL, id) = (void (*)(id, SEL, id))objc_msgSend;
 	
-	if(_extension == nil)
+	if(_extension == nil && _builtinActivity == nil)
 	{
 		if(handler)
 		{
@@ -185,28 +211,44 @@ NSInteger const LNExtensionNotFoundErrorCode = 6001;
 		return;
 	}
 	
-	NSString* extension = [NSStringFromClass(LNExtensionExecutor.class) substringWithRange:NSMakeRange(2, 9)];
-	NSString* UIActivity = [NSStringFromClass(UIActivityViewController.class) substringToIndex:10];
-	NSString* activityStr = [UIActivity substringFromIndex:2];
+	UIActivity* activity;
 	
-	NSMutableString* extActClsName = [@"_" mutableCopy];
-	[extActClsName appendString:UIActivity];
-	[extActClsName appendString:[NSStringFromClass(UIApplication.class) substringFromIndex:2]];
-	[extActClsName appendString:extension];
-	[extActClsName appendString:@"Discovery"];
-	
-	NSMutableString* sel = [[extension lowercaseString] mutableCopy];
-	[sel appendString:@"Based"];
-	[sel appendString:activityStr];
-	[sel appendString:@"For"];
-	[sel appendString:[NSString stringWithFormat:@"%@:", extension]];
-	
-	id activity = msgsend2(NSClassFromString(extActClsName), NSSelectorFromString(sel), _extension);
+	if(_builtinActivity != nil)
+	{
+		activity = _builtinActivity;
+	}
+	else
+	{
+		NSString* extension = [NSStringFromClass(LNExtensionExecutor.class) substringWithRange:NSMakeRange(2, 9)];
+		NSString* UIActivity = [NSStringFromClass(UIActivityViewController.class) substringToIndex:10];
+		NSString* activityStr = [UIActivity substringFromIndex:2];
+		
+		NSMutableString* extActClsName = [@"_" mutableCopy];
+		[extActClsName appendString:UIActivity];
+		[extActClsName appendString:[NSStringFromClass(UIApplication.class) substringFromIndex:2]];
+		[extActClsName appendString:extension];
+		[extActClsName appendString:@"Discovery"];
+		
+		NSLog(@"%@", extActClsName);
+		
+		NSMutableString* sel = [[extension lowercaseString] mutableCopy];
+		[sel appendString:@"Based"];
+		[sel appendString:activityStr];
+		[sel appendString:@"For"];
+		[sel appendString:[NSString stringWithFormat:@"%@:", extension]];
+		
+		NSLog(@"%@", sel);
+		
+		activity = msgsend2(NSClassFromString(extActClsName), NSSelectorFromString(sel), _extension);
+	}
 	
 	_LNExecutorActivityViewController* activityVC;
 	if(configuration)
 	{
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunguarded-availability"
 		activityVC = [[_LNExecutorActivityViewController alloc] initWithActivityItemsConfiguration:configuration];
+#pragma clang diagnostic pop
 	}
 	else
 	{
