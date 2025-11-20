@@ -179,17 +179,17 @@ static NSString* const __builtins = @"X1VJQWN0aXZpdHlHZXRCdWlsdGluQWN0aXZpdGllcw
 	};
 }
 
-- (void)executeWithItemsConfiguration:(id<UIActivityItemsConfigurationReading>)activityItemsConfiguration onViewController:(UIViewController*)vc completionHandler:(void (^ __nonnull)(BOOL completed, NSArray* __nullable returnedItems, NSError* __nullable activityError))handler
+- (void)executeWithItemsConfiguration:(id<UIActivityItemsConfigurationReading>)activityItemsConfiguration onViewController:(UIViewController*)vc completionHandler:(void (^ __nullable)(BOOL completed, NSArray* __nullable returnedItems, NSError* __nullable activityError))handler
 {
 	[self _executeWithConfiguration:activityItemsConfiguration activityItems:nil viewController:vc completionHandler:[self _completionHandlerWithUserCompletionHandler:handler]];
 }
 
-- (void)executeWithActivityItems:(NSArray*)activityItems onViewController:(UIViewController*)vc completionHandler:(void (^ __nonnull)(BOOL completed, NSArray* __nullable returnedItems, NSError* __nullable activityError))handler
+- (void)executeWithActivityItems:(NSArray*)activityItems onViewController:(UIViewController*)vc completionHandler:(void (^ __nullable)(BOOL completed, NSArray* __nullable returnedItems, NSError* __nullable activityError))handler
 {
 	[self _executeWithConfiguration:nil activityItems:activityItems viewController:vc completionHandler:[self _completionHandlerWithUserCompletionHandler:handler]];
 }
 
-- (void)executeWithInputItems:(NSArray *)inputItems onViewController:(UIViewController*)vc completionHandler:(void (^ __nonnull)(BOOL completed, NSArray * __nullable returnedItems, NSError* __nullable activityError))handler
+- (void)executeWithInputItems:(NSArray *)inputItems onViewController:(UIViewController*)vc completionHandler:(void (^ __nullable)(BOOL completed, NSArray * __nullable returnedItems, NSError* __nullable activityError))handler
 {
 	[self executeWithActivityItems:inputItems onViewController:vc completionHandler:handler];
 }

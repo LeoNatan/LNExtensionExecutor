@@ -37,7 +37,11 @@ class ViewController: UIViewController {
 	@IBAction func showMessage(_ sender: AnyObject) {
 		execute(extensionBundleIdentifier: UIActivity.ActivityType.message.rawValue)
 	}
-	
+
+	@IBAction func showPrint(_ sender: AnyObject) {
+		execute(extensionBundleIdentifier: UIActivity.ActivityType.print.rawValue)
+	}
+
 	@IBAction func showWhatsApp(_ sender: AnyObject) {
 		execute(extensionBundleIdentifier: "net.whatsapp.WhatsApp.ShareExtension")
 	}
@@ -52,6 +56,7 @@ class ViewController: UIViewController {
 	
 	@IBAction func showActivityViewController(_ sender: AnyObject) {
 		let avc = UIActivityViewController(activityItems: payload, applicationActivities: nil)
+		avc.popoverPresentationController?.sourceView = sender as? UIView
 		avc.completionWithItemsHandler = { activityType, completed, returnedItems, activityError in
 			guard let activityType else {
 				return
