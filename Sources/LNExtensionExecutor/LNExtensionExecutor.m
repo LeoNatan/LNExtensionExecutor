@@ -137,8 +137,11 @@ static NSString* const __builtins = @"X1VJQWN0aXZpdHlHZXRCdWlsdGluQWN0aXZpdGllcw
 		
 		if(completed == NO || returnedExtensionItems.count == 0)
 		{
-			handler(completed, nil, activityError);
-			
+			if(handler)
+			{
+				handler(completed, nil, activityError);
+			}
+
 			return;
 		}
 		
@@ -159,7 +162,7 @@ static NSString* const __builtins = @"X1VJQWN0aXZpdHlHZXRCdWlsdGluQWN0aXZpdGllcw
 						
 						loadCounter --;
 						
-						if(loadCounter == 0)
+						if(loadCounter == 0 && handler)
 						{
 							handler(completed, returnedItems, activityError);
 						}
