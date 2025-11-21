@@ -1,6 +1,6 @@
 # LNExtensionExecutor
 
-An extension executor for iOS, allowing bypass of `UIActivityViewController` to execute both UI and non-UI action extensions directly.
+An extension and activity executor for iOS, allowing bypass of `UIActivityViewController` to execute both UI and non-UI action extensions directly.
 
 [![GitHub release](https://img.shields.io/github/release/LeoNatan/LNExtensionExecutor.svg)](https://github.com/LeoNatan/LNExtensionExecutor/releases) [![GitHub stars](https://img.shields.io/github/stars/LeoNatan/LNExtensionExecutor.svg)](https://github.com/LeoNatan/LNExtensionExecutor/stargazers) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/LeoNatan/LNExtensionExecutor/master/LICENSE) <span class="badge-paypal"><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=BR68NJEJXGWL6" title="Donate to this project using PayPal"><img src="https://img.shields.io/badge/paypal-donate-yellow.svg?style=flat" alt="PayPal Donation Button" /></a></span>
 
@@ -46,4 +46,4 @@ The activity items provided to the `execute` method should be the same that woul
 
 ## Extension Bundle Identifier Discovery
 
-It is up to you to figure out what the bundle identifier of the extension is. One approach to discovering them is by using `UIActivityViewController` and setting the `completionWithItemsHandler` property with a closure, and printing the `activityType` argument. Note, that, in some cases, the activity type differs from the bundle identifier of the extension. Another approach is to obtain an IPA from the App Store or accessing the filesystem in a jailbroken device, and inspecting the Info.plist of the extension for the bundle identifier. 
+Discovering the actual extension identifiers can be difficult. To assist with this task, the included example projects helps you by setting a text field to the extension identifier you select in a `UIActivityViewController`. This identifier can then be copied and used inside your app.

@@ -3,12 +3,14 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		39114EEE26E2CC55004FC75B /* LNExtensionExecutor in Frameworks */ = {isa = PBXBuildFile; productRef = 39114EED26E2CC55004FC75B /* LNExtensionExecutor */; };
 		39114EEF26E2CC55004FC75B /* LNExtensionExecutor in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 39114EED26E2CC55004FC75B /* LNExtensionExecutor */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		39311BAB2ED078B800EEE868 /* SpyActivityViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 39311BAA2ED078B800EEE868 /* SpyActivityViewController.m */; };
+		39311C2B2ED0953700EEE868 /* LNExtensionExecutor.icon in Resources */ = {isa = PBXBuildFile; fileRef = 39311C2A2ED0953700EEE868 /* LNExtensionExecutor.icon */; };
 		394BA3E925E93CAA00899EB5 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 394BA3E825E93CAA00899EB5 /* AppDelegate.m */; };
 		394BA3EC25E93CAA00899EB5 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 394BA3EB25E93CAA00899EB5 /* SceneDelegate.m */; };
 		394BA3F225E93CAA00899EB5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 394BA3F025E93CAA00899EB5 /* Main.storyboard */; };
@@ -34,6 +36,9 @@
 
 /* Begin PBXFileReference section */
 		39114EE926E2CC48004FC75B /* LNExtensionExecutor */ = {isa = PBXFileReference; lastKnownFileType = folder; name = LNExtensionExecutor; path = ..; sourceTree = "<group>"; };
+		39311BA92ED078B800EEE868 /* SpyActivityViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SpyActivityViewController.h; sourceTree = "<group>"; };
+		39311BAA2ED078B800EEE868 /* SpyActivityViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SpyActivityViewController.m; sourceTree = "<group>"; };
+		39311C2A2ED0953700EEE868 /* LNExtensionExecutor.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = LNExtensionExecutor.icon; sourceTree = "<group>"; };
 		394BA3E425E93CAA00899EB5 /* LNExtensionExecutorExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LNExtensionExecutorExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		394BA3E725E93CAA00899EB5 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		394BA3E825E93CAA00899EB5 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -69,6 +74,7 @@
 		394BA3DB25E93CAA00899EB5 = {
 			isa = PBXGroup;
 			children = (
+				39311C2A2ED0953700EEE868 /* LNExtensionExecutor.icon */,
 				39114EE926E2CC48004FC75B /* LNExtensionExecutor */,
 				394BA3E625E93CAA00899EB5 /* LNExtensionExecutorExample */,
 				394BA3E525E93CAA00899EB5 /* Products */,
@@ -91,6 +97,8 @@
 				394BA3E825E93CAA00899EB5 /* AppDelegate.m */,
 				394BA3EA25E93CAA00899EB5 /* SceneDelegate.h */,
 				394BA3EB25E93CAA00899EB5 /* SceneDelegate.m */,
+				39311BA92ED078B800EEE868 /* SpyActivityViewController.h */,
+				39311BAA2ED078B800EEE868 /* SpyActivityViewController.m */,
 				394BA40425E980D000899EB5 /* ViewController.swift */,
 				394BA3F025E93CAA00899EB5 /* Main.storyboard */,
 				394BA3F325E93CAC00899EB5 /* Assets.xcassets */,
@@ -164,6 +172,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				394BA3F725E93CAC00899EB5 /* LaunchScreen.storyboard in Resources */,
+				39311C2B2ED0953700EEE868 /* LNExtensionExecutor.icon in Resources */,
 				394BA3F425E93CAC00899EB5 /* Assets.xcassets in Resources */,
 				394BA3F225E93CAA00899EB5 /* Main.storyboard in Resources */,
 			);
@@ -178,6 +187,7 @@
 			files = (
 				394BA40525E980D000899EB5 /* ViewController.swift in Sources */,
 				394BA3E925E93CAA00899EB5 /* AppDelegate.m in Sources */,
+				39311BAB2ED078B800EEE868 /* SpyActivityViewController.m in Sources */,
 				394BA3FA25E93CAC00899EB5 /* main.m in Sources */,
 				394BA3EC25E93CAA00899EB5 /* SceneDelegate.m in Sources */,
 			);
@@ -328,19 +338,22 @@
 		394BA3FE25E93CAC00899EB5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = LNExtensionExecutor;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = S9QFG2VH2E;
 				INFOPLIST_FILE = LNExtensionExecutorExample/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				INFOPLIST_KEY_CFBundleDisplayName = "Extension Executor";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.LeoNatan.LNExtensionExecutorExample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = LNExtensionExecutorExample/SpyActivityViewController.h;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -350,19 +363,22 @@
 		394BA3FF25E93CAC00899EB5 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = LNExtensionExecutor;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = S9QFG2VH2E;
 				INFOPLIST_FILE = LNExtensionExecutorExample/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				INFOPLIST_KEY_CFBundleDisplayName = "Extension Executor";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.LeoNatan.LNExtensionExecutorExample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = LNExtensionExecutorExample/SpyActivityViewController.h;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

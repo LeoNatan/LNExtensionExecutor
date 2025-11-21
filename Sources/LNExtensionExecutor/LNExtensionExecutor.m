@@ -43,12 +43,22 @@ static NSString* const __builtins = @"X1VJQWN0aXZpdHlHZXRCdWlsdGluQWN0aXZpdGllcw
 
 + (nullable instancetype)executorWithExtensionBundleIdentifier:(nonnull NSString*)bundleId
 {
-	return [self executorWithExtensionBundleIdentifier:bundleId error:NULL];
+	return [self executorWithExtensionIdentifier:bundleId error:NULL];
 }
 
 + (nullable instancetype)executorWithExtensionBundleIdentifier:(NSString*)bundleIdentifier error:(NSError**)error
 {
-	return [[self alloc] initWithExtensionBundleIdentifier:bundleIdentifier error:error];
+	return [[self alloc] initWithExtensionIdentifier:bundleIdentifier error:error];
+}
+
++ (nullable instancetype)executorWithExtensionIdentifier:(NSString *)identifier
+{
+	return [self executorWithExtensionIdentifier:identifier error:NULL];
+}
+
++ (nullable instancetype)executorWithExtensionIdentifier:(NSString *)identifier error:(NSError * _Nullable __autoreleasing *)error
+{
+	return [[self alloc] initWithExtensionIdentifier:identifier error:error];
 }
 
 - (instancetype)init
@@ -58,44 +68,44 @@ static NSString* const __builtins = @"X1VJQWN0aXZpdHlHZXRCdWlsdGluQWN0aXZpdGllcw
 	return nil;
 }
 
-- (nullable instancetype)initWithExtensionBundleIdentifier:(nonnull NSString*)bundleId  error:(NSError**)error
+- (instancetype)initWithExtensionIdentifier:(NSString *)identifier error:(NSError * _Nullable __autoreleasing *)error
 {
-	if(bundleId == nil)
+	if(identifier == nil)
 	{
 		[NSException raise:NSInternalInconsistencyException format:@"Bundle identifier cannot be nil"];
-		
+
 		return nil;
 	}
-	
+
 	self = [super init];
-	
+
 	if(self)
 	{
-		_identifier = bundleId;
-		
+		_identifier = identifier;
+
 		id (*msgsend1)(id, SEL, NSString*, NSError**) = (id (*)(id, SEL, NSString*, NSError**))objc_msgSend;
-		
+
 		NSMutableString* extClsName = [NSStringFromClass([LNExtensionExecutor class]) mutableCopy];
 		[extClsName deleteCharactersInRange:NSMakeRange(11, 8)];
 		[extClsName replaceCharactersInRange:NSMakeRange(0, 2) withString:@"NS"];
-		
+
 		NSMutableString* slName = [@"cellWithIdentifier:error:" mutableCopy];
 		[slName replaceCharactersInRange:NSMakeRange(0, 4) withString:[[extClsName substringFromIndex:2] lowercaseString]];
-		
+
 		//+[NSExtension extensionWithIdentifier:error:]
 		_extension = msgsend1(NSClassFromString(extClsName), NSSelectorFromString(slName), _identifier, error);
-		
+
 		if(_extension == nil)
 		{
 			//Try to load built in activity
-			
+
 			NSString* builtinsName = [[NSString alloc] initWithData:[[NSData alloc] initWithBase64EncodedString:__builtins options:0] encoding:NSUTF8StringEncoding];
 			NSArray<UIActivity*>* (*getBuiltins)(void) = (void*)dlsym(RTLD_SELF, builtinsName.UTF8String);
 			if(getBuiltins != NULL)
 			{
 				NSArray<UIActivity*>* builtins = getBuiltins();
 				[builtins enumerateObjectsUsingBlock:^(UIActivity * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-					if([obj.activityType isEqualToString:bundleId])
+					if([obj.activityType isEqualToString:identifier])
 					{
 						_builtinActivity = obj;
 						*stop = YES;
@@ -103,19 +113,24 @@ static NSString* const __builtins = @"X1VJQWN0aXZpdHlHZXRCdWlsdGluQWN0aXZpdGllcw
 				}];
 			}
 		}
-		
+
 		if(_extension == nil && _builtinActivity == nil)
 		{
 			if(error != NULL && *error == nil)
 			{
-				*error = [NSError errorWithDomain:LNExtensionExecutorErrorDomain code:LNExtensionNotFoundErrorCode userInfo:@{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Extension with identifier \"%@\" not found", _identifier]}];
+				*error = [NSError errorWithDomain:LNExtensionExecutorErrorDomain code:LNExtensionNotFoundErrorCode userInfo:@{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Extension with identifier \"%@\" not found.", _identifier]}];
 			}
-			
+
 			return nil;
 		}
 	}
-	
+
 	return self;
+}
+
+- (nullable instancetype)initWithExtensionBundleIdentifier:(nonnull NSString*)bundleId  error:(NSError**)error
+{
+	return [self initWithExtensionIdentifier:bundleId error:error];
 }
 
 - (nonnull NSString*)description
