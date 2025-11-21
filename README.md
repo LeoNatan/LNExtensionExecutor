@@ -46,4 +46,4 @@ The activity items provided to the `execute` method should be the same that woul
 
 ## Extension Bundle Identifier Discovery
 
-Discovering the actual extension identifiers can be difficult. To assist with this task, the included example projects helps you by setting a text field to the extension identifier you select in a `UIActivityViewController`. This identifier can then be copied and used inside your app.
+Discovering the actual extension identifiers can be difficult. To assist with this task, the included example project helps you by setting a text field to the extension identifier you select in a `UIActivityViewController`. This identifier can then be copied and used inside your app.
